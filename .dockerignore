@@ -1,32 +1,59 @@
-# 依赖目录
-node_modules/
-**/node_modules/
-
-# 构建产物
-dist/
-**/dist/
-
-# 版本控制
-.git/
+# Git
+.git
 .gitignore
+.gitattributes
 
-# IDE 配置
-.idea/
+# npm/pnpm
+node_modules
+.pnpm-store
+pnpm-debug.log*
 
-# 日志文件
+# Logs
+logs
 *.log
-Update.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# 临时文件
-*.tmp
-*.temp
-
-# 系统文件
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+desktop.ini
 
-# 测试文件
-**/test/
-**/__tests__/
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.editorconfig
 
-# 其他不需要的文件
-share.txt
+# Build outputs
+dist
+build
+.eslintcache
+
+# Temporary
+tmp
+temp
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Documentation
+README.md
+LICENSE
+CHANGELOG.md
+update.log
+
+# Environment
+.env
+.env.local
+.env.*.local

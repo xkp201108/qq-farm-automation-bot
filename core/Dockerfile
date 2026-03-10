@@ -30,7 +30,6 @@ RUN corepack enable
 
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY core/package.json ./core/
-COPY web/package.json ./web/
 
 # Install only runtime deps for core
 RUN pnpm -C core install --prod --frozen-lockfile
@@ -47,7 +46,6 @@ ENV TZ=Asia/Shanghai
 # Copy runtime deps
 COPY --from=prod-deps /app/node_modules ../node_modules/
 COPY --from=prod-deps /app/core/node_modules ./node_modules/
-COPY --from=prod-deps /app/package.json ../package.json
 
 # Copy core source
 COPY --from=builder /app/core ./

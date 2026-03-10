@@ -1,13 +1,13 @@
+version: '3.8'
+
 services:
   qq-farm-bot:
     build: .
-    container_name: qq-farm-bot
-    restart: always
     ports:
       - "3000:3000"
-    volumes:
-      # 重要：挂载 data 目录，防止更新镜像后账号信息丢失
-      - ./data:/app/core/data
     environment:
+      - NODE_ENV=production
       - TZ=Asia/Shanghai
-      - ADMIN_PORT=3000
+    volumes:
+      - ./core/data:/app/core/data
+    restart: unless-stopped

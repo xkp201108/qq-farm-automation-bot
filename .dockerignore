@@ -1,6 +1,32 @@
-node_modules
-web/node_modules
-core/node_modules
-.git
-dist
-web/dist
+# 依赖目录
+node_modules/
+**/node_modules/
+
+# 构建产物
+dist/
+**/dist/
+
+# 版本控制
+.git/
+.gitignore
+
+# IDE 配置
+.idea/
+
+# 日志文件
+*.log
+Update.log
+
+# 临时文件
+*.tmp
+*.temp
+
+# 系统文件
+Thumbs.db
+
+# 测试文件
+**/test/
+**/__tests__/
+
+# 其他不需要的文件
+share.txt

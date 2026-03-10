@@ -15,10 +15,9 @@ services:
       - ADMIN_HOST=0.0.0.0
       # 您可以添加其他环境变量
       # - LOG_LEVEL=info
-    volumes:
-      # 挂载卷用于持久化数据（如果应用需要）
-      # - ./data:/app/data
-      # - ./logs:/app/logs
+    # volumes: # 如果需要持久化数据，取消注释并配置以下卷
+    #   - ./data:/app/data
+    #   - ./logs:/app/logs
     networks:
       - qq-farm-network
     healthcheck:

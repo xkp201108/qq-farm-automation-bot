@@ -21,7 +21,7 @@ RUN pnpm build:web
 # --- 最终运行阶段 ---
 FROM base AS runner
 ENV NODE_ENV=production
-ENV ADMIN_PORT=3007
+ENV ADMIN_PORT=3000
 
 # 只复制必要运行文件，减小镜像体积
 COPY --from=deps /app/node_modules ./node_modules
@@ -31,7 +31,7 @@ COPY --from=builder /app/web/dist ./web/dist
 COPY --from=builder /app/package.json ./
 
 # 暴露默认端口
-EXPOSE 3007
+EXPOSE 3000
 
 # 启动核心服务
 CMD ["pnpm", "dev:core"]

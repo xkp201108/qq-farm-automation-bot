@@ -1,37 +1,60 @@
-# --- 基础环境 ---
-FROM node:20-alpine AS base
-RUN corepack enable && corepack prepare pnpm@latest --activate
+FROM node:20-alpine AS builder
+
 WORKDIR /app
 
-# --- 依赖安装阶段 ---
-FROM base AS deps
-COPY pnpm-lock.yaml ./
-COPY package.json ./
+RUN corepack enable
+
+# Copy workspace configuration
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+
+# Copy project package.json files
 COPY core/package.json ./core/
 COPY web/package.json ./web/
-# 安装所有依赖
+
+# Install all deps for build
 RUN pnpm install --frozen-lockfile
 
-# --- 静态资源构建阶段 ---
-FROM deps AS builder
-COPY . .
-# 构建前端网页 (产物会生成在 web/dist)
+# Copy source code
+COPY core ./core
+COPY web ./web
+
+# Build web
 RUN pnpm build:web
 
-# --- 最终运行阶段 ---
-FROM base AS runner
+# ==========================================
+FROM node:20-alpine AS prod-deps
+
+WORKDIR /app
+
+RUN corepack enable
+
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY core/package.json ./core/
+
+# Install only runtime deps for core
+RUN pnpm -C core install --prod --frozen-lockfile
+
+# ==========================================
+
+FROM node:20-alpine AS runner
+
+WORKDIR /app/core
+
 ENV NODE_ENV=production
-ENV ADMIN_PORT=3000
+ENV TZ=Asia/Shanghai
 
-# 只复制必要运行文件，减小镜像体积
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/core/node_modules ./core/node_modules
-COPY --from=builder /app/core ./core
-COPY --from=builder /app/web/dist ./web/dist
-COPY --from=builder /app/package.json ./
+# Copy runtime deps
+COPY --from=prod-deps /app/node_modules ../node_modules/
+COPY --from=prod-deps /app/core/node_modules ./node_modules/
 
-# 暴露默认端口
+# Copy core source
+COPY --from=builder /app/core ./
+
+# Copy built web assets
+COPY --from=builder /app/web/dist ../web/dist
+
+# Expose port
 EXPOSE 3000
 
-# 启动核心服务
-CMD ["pnpm", "dev:core"]
+# Start command
+CMD ["node", "client.js"]
